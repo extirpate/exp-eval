@@ -55,7 +55,14 @@ object ExpEval {
    * @return
    */
   def evalExp(exp: Exp, map: Map[String, Exp]): Double = {
-    Double.NaN
+    exp match{
+      case Literal(x) => x
+      case Ref(x) => {if (map.exists(_._1 == x)) evalExp(map.find(_._1 == x).get._2,map.-(x)) else Double.NaN}
+      case Plus(x,y)=>evalExp(x,map)+evalExp(y,map)
+      case Minus(x,y)=>evalExp(x,map)-evalExp(y,map)
+      case Times(x,y)=>evalExp(x,map)*evalExp(y,map)
+      case Divide(x,y)=>{if (evalExp(y,map)==0) Double.NaN else evalExp(x,map)/evalExp(y,map)}
+    }
   }
 
 }
